@@ -422,6 +422,8 @@ def main():
         if(task == "Regression"):
             categorical_threshold = 5
         X, X_predictor= preprocess_data(X, X_predictor, categorical_threshold)
+
+        label_encoder="Not encoded"
         if(task=="Classification" and (Y.dtype != int and Y.dtype != float)):
             label_encoder = LabelEncoder()
             Y = label_encoder.fit_transform(Y)
@@ -478,7 +480,7 @@ def main():
             model = None
         if model is not None:
             predictions = model.predict(X_predictor)
-            if (label_encoder is not None):
+            if (label_encoder != "Not encoded"):
                 predictions = label_encoder.inverse_transform(predictions)
             st.write("Predictions:")
 
