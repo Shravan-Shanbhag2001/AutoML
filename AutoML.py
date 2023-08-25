@@ -18,31 +18,38 @@ from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 import streamlit as st
 
-def preprocess_data(X, categorical_threshold):
-    def categorical_encod(uniq, categorical_threshold, column_data):
+def preprocess_data(X, X_predictor, categorical_threshold):
+    def categorical_encod(uniq, categorical_threshold, column_data, pred_column_data):
         encoding_threshold = int(0.4 * categorical_threshold)
         if uniq <= encoding_threshold:
             one_hot_encoder = OneHotEncoder()
             one_hot_encoded = one_hot_encoder.fit_transform(column_data)
+            one_hot_encoded_pred = one_hot_encoder.fit_transform(pred_column_data)
             one_hot_encoded_df = pd.DataFrame(one_hot_encoded.toarray(), columns=one_hot_encoder.get_feature_names_out())
-            return one_hot_encoded_df
+            one_hot_encoded_df_pred = pd.DataFrame(one_hot_encoded_pred.toarray(), columns=one_hot_encoder.get_feature_names_out())
+            return one_hot_encoded_df, one_hot_encoded_df_pred
         else:
             frequency_map = column_data.iloc[:, 0].value_counts().to_dict()
+            frequency_map_pred = pred_column_data.iloc[:, 0].value_counts().to_dict()
             column_data_encoded = column_data.iloc[:, 0].map(frequency_map)
-            return pd.DataFrame(column_data_encoded)
+            column_data_encoded_pred = pred_column_data.iloc[:, 0].map(frequency_map)
+            return pd.DataFrame(column_data_encoded),pd.DataFrame(column_data_encoded_pred)
 
     # Encoding X
     columns = X.columns
     for column in columns:
         uniq = X[column].nunique()
         if uniq <= categorical_threshold or X[column].dtype == object:
-            df = categorical_encod(uniq, categorical_threshold, X[[column]])
+            df,df_pred = categorical_encod(uniq, categorical_threshold, X[[column]], X_predictor[[column]])
             X = X.drop(column, axis=1)
+            X_predictor = X_predictor.drop(column, axis=1)
             X = pd.concat([X, df], axis=1)
+            X_predictor = pd.concat([X_predictor, df1], axis=1)
         elif uniq > categorical_threshold and (X[column].dtype == int or X[column].dtype == float):
             scaler = StandardScaler()
             X[column] = scaler.fit_transform(X[[column]])
-    return X
+            X_predictor[column] = scaler.fit_transform(X_predictor[[column]])
+    return X, X_predictor
 
 
 def automated_feature_engineering(X, task):
@@ -415,8 +422,7 @@ def main():
         categorical_threshold = Y.nunique()
         if(task == "Regression"):
             categorical_threshold = 5
-        X = preprocess_data(X, categorical_threshold)
-        X_predictor = preprocess_data(X_predictor, categorical_threshold)
+        X, X_predictor= preprocess_data(X, X_predictor, categorical_threshold)
         if(task=="Classification" and (Y.dtype != int and Y.dtype != float)):
             label_encoder = LabelEncoder()
             Y = label_encoder.fit_transform(Y)
