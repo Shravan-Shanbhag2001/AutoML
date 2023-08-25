@@ -403,9 +403,15 @@ def select_best_model_regression(y_test, y_pred_rf, y_pred_gb, y_pred_linear):
 
 # Main Streamlit app code
 def main():
-    st.sidebar.title("Sidebar Title")
-    st.sidebar.write("Welcome to the sidebar!")
-    st.sidebar.write("Here you can provide additional information for the user.")
+    st.sidebar.title("Algorithms supported")
+    st.sidebar.header("Classification: ")
+    st.sidebar.write("1) Random Forest Classifier")
+    st.sidebar.write("2) Gradient Boosting Classifier")
+    st.sidebar.write("3) Logistic Regression")
+    st.sidebar.header("Regression: ")
+    st.sidebar.write("1) Random Forest Regression")
+    st.sidebar.write("2) Gradient Boosting Regression")
+    st.sidebar.write("3) Linear Regression")
     st.title("Automated Machine Learning Project")
     uploaded_file_original = st.file_uploader("Upload a CSV file for training", type=["csv"])
     uploaded_file_predictor = st.file_uploader("Upload a CSV file for predicting", type=["csv"])
