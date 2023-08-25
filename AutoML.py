@@ -48,7 +48,7 @@ def preprocess_data(X, X_predictor, categorical_threshold):
         elif uniq > categorical_threshold and (X[column].dtype == int or X[column].dtype == float):
             scaler = StandardScaler()
             X[column] = scaler.fit_transform(X[[column]])
-            X_predictor[column] = scaler.fit_transform(X_predictor[[column]])
+            X_predictor[column] = scaler.transform(X_predictor[[column]])
     return X, X_predictor
 
 
