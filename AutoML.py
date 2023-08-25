@@ -268,8 +268,7 @@ def random_forest_regression(X_train, X_test, y_train, y_test):
     mse_rf = mean_squared_error(y_test, y_pred_rf)
     #print(f"Best Random Forest Mean Squared Error (Random Search): {mse_rf}")
 
-    return best_rf_model, y_pred_rf, X_train, X_test, y_train, y_test
-
+    return best_rf_model, y_pred_rf
 
 def gradient_boosting_regression(X_train, X_test, y_train, y_test):
     # Defining hyperparameter distribution for Gradient Boosting
