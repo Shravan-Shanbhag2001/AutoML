@@ -65,7 +65,6 @@ def automated_feature_engineering(X, task):
                                                           "divide_numeric", "equal", "not_equal", "greater_than",
                                                           "less_than", "greater_than_equal_to", "less_than_equal_to",
                                                           "is_null", "cum_sum", "cum_min", "cum_max"])
-        st.write("if")
     elif (len(X.columns) > 10 or len(X) > 150):
         features, feature_defs = ft.dfs(entityset=es, target_dataframe_name="User_data_transformed",
                                         agg_primitives=["count", "sum", "mean", "median", "std", "min", "max",
@@ -75,7 +74,6 @@ def automated_feature_engineering(X, task):
                                                           "equal", "not_equal", "greater_than", "less_than",
                                                           "greater_than_equal_to", "less_than_equal_to", "and", "or",
                                                           "is_null", "cum_sum", "cum_min", "cum_max"])
-        st.write("elif")
     else:
         # Fetching aggregation and transformation primitives
         all_primitives_df = ft.primitives.list_primitives()
@@ -86,7 +84,6 @@ def automated_feature_engineering(X, task):
         features, feature_defs = ft.dfs(entityset=es, target_dataframe_name="User_data_transformed",
                                         agg_primitives=aggregation_primitives['name'].tolist(),
                                         trans_primitives=transformation_primitives['name'].tolist())
-        st.write("else")
 
     X = features
     return X
@@ -477,7 +474,7 @@ def main():
             model = None
         if model is not None:
             predictions = model.predict(X_predictor)
-            if task == "Classification":
+            if (task == "Classification" and (predictions.dtype != int and predictions.dtype != float)) :
                 #accuracy = accuracy_score(Y.iloc[-50:], predictions)
                 predictions = label_encoder.inverse_transform(predictions)
                 #st.write(f"Accuracy on last 50 samples: {accuracy:.2f}")
