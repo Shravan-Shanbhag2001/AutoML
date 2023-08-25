@@ -35,7 +35,7 @@ def preprocess_data(X, categorical_threshold):
     columns = X.columns
     for column in columns:
         uniq = X[column].nunique()
-        if uniq <= categorical_threshold:
+        if uniq <= categorical_threshold or X[column].dtype == object:
             df = categorical_encod(uniq, categorical_threshold, X[[column]])
             X = X.drop(column, axis=1)
             X = pd.concat([X, df], axis=1)
@@ -44,13 +44,6 @@ def preprocess_data(X, categorical_threshold):
             scaler = StandardScaler()
             X[column] = scaler.fit_transform(X[[column]])
             st.write("elif_scaler")
-        elif X[column].dtype == object:
-            tfidf_vectorizer = TfidfVectorizer(max_features=1000)
-            tfidf_features = tfidf_vectorizer.fit_transform(X[column])
-            tfidf_df = pd.DataFrame(tfidf_features.toarray(), columns=[f"tfidf_{name}_{column}" for name in tfidf_vectorizer.get_feature_names_out()])
-            X.drop(column, axis=1, inplace=True)
-            X = pd.concat([X, tfidf_df], axis=1)
-            st.write("elif_tfidf")
     st.write(X.columns)
     return X
 
