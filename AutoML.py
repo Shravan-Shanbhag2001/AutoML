@@ -243,9 +243,6 @@ def logistic_regression(X_train, X_test, y_train, y_test):
 
 # ML algorithms with hyperparameter tuning if task='Regression'
 def random_forest_regression(X_train, X_test, y_train, y_test):
-    # Splitting the dataset into training and testing sets
-    X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.2, random_state=42)
-
     # Defining hyperparameter grid for Random Forest
     param_distributions = {
         'n_estimators': [i for i in range(50, 500, 50)],
