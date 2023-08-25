@@ -478,7 +478,7 @@ def main():
             model = None
         if model is not None:
             predictions = model.predict(X_predictor)
-            if (task == "Classification" and (predictions.dtype != int and predictions.dtype != float)) :
+            if (task == "Classification" and (predictions.dtype == int or predictions.dtype == float)) :
                 #accuracy = accuracy_score(Y.iloc[-50:], predictions)
                 predictions = label_encoder.inverse_transform(predictions)
                 #st.write(f"Accuracy on last 50 samples: {accuracy:.2f}")
