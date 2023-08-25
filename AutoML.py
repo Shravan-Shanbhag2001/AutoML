@@ -40,11 +40,11 @@ def preprocess_data(X, X_predictor, categorical_threshold):
     for column in columns:
         uniq = X[column].nunique()
         if uniq <= categorical_threshold or X[column].dtype == object:
-            df,df_pred = categorical_encod(uniq, categorical_threshold, X[[column]], X_predictor[[column]])
+            df, df_pred = categorical_encod(uniq, categorical_threshold, X[[column]], X_predictor[[column]])
             X = X.drop(column, axis=1)
             X_predictor = X_predictor.drop(column, axis=1)
             X = pd.concat([X, df], axis=1)
-            X_predictor = pd.concat([X_predictor, df1], axis=1)
+            X_predictor = pd.concat([X_predictor, df_pred], axis=1)
         elif uniq > categorical_threshold and (X[column].dtype == int or X[column].dtype == float):
             scaler = StandardScaler()
             X[column] = scaler.fit_transform(X[[column]])
