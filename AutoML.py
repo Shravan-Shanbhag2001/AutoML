@@ -478,10 +478,9 @@ def main():
             model = None
         if model is not None:
             predictions = model.predict(X_predictor)
-            if (task == "Classification" and (predictions.dtype == int or predictions.dtype==float)):
+            if (label_encoder is not None):
                 predictions = label_encoder.inverse_transform(predictions)
-            else:
-                st.write("Predictions:")
+            st.write("Predictions:")
 
             combined_data = pd.concat([X_predict.reset_index(drop=True), pd.DataFrame(predictions, columns=["Predictions"])], axis=1)
             styled_combined_data = combined_data.style.set_properties(subset=['Predictions'],**{'background-color': 'yellow'})
