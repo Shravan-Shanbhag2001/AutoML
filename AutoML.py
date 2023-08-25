@@ -416,10 +416,12 @@ def main():
         df = df.fillna(method='ffill')
         X = df.iloc[:, :-1]
         Y = df.iloc[:, -1]
-        X_predict=pd.read_csv(uploaded_file_predictor)
+        X_predict = pd.read_csv(uploaded_file_predictor)
         X_predictor = X_predict.fillna(method='ffill')
 
         categorical_threshold = Y.nunique()
+        if(task == "Regression"):
+            categorical_threshold = 10
         X = preprocess_data(X, categorical_threshold)
         X_predictor = preprocess_data(X_predictor, categorical_threshold)
         if(task=="Classification" and (Y.dtype != int and Y.dtype != float)):
