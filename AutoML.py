@@ -413,11 +413,11 @@ def main():
         st.write("Uploaded training DataFrame:")
         st.write(df)
         # Preprocessing steps
-        df = df.fillna(method='ffill')
+        df = df.fillna(method='ffill').fillna(method='bfill')
         X = df.iloc[:, :-1]
         Y = df.iloc[:, -1]
         X_predict = pd.read_csv(uploaded_file_predictor)
-        X_predictor = X_predict.fillna(method='ffill')
+        X_predictor = X_predict.fillna(method='ffill').fillna(method='bfill')
         categorical_threshold = Y.nunique()
         if(task == "Regression"):
             categorical_threshold = 5
@@ -443,7 +443,9 @@ def main():
         X_test = X_test.loc[:, mask_test]
         X_predictor = X_predictor.loc[:, mask_predictor]
         st.write("Feature Selection done")
-        st.write(X_predictor)
+        X_train = X_train.fillna(method='ffill').fillna(method='bfill')
+        X_test = X_test.fillna(method='ffill').fillna(method='bfill')
+        X_predictor = X_predictor.fillna(method='ffill').fillna(method='bfill')
         # Classification models
         if(task=="Classification"):
             best_rf_model, y_pred_rf = random_forest_classification(X_train, X_test, y_train, y_test)
@@ -475,7 +477,6 @@ def main():
             st.write("Unknown best model:", best_model)
             model = None
         if model is not None:
-            st.write(X_predictor.isna().sum())
             predictions = model.predict(X_predictor)
             if (task == "Classification" and (predictions.dtype != int and predictions.dtype != float)) :
                 #accuracy = accuracy_score(Y.iloc[-50:], predictions)
