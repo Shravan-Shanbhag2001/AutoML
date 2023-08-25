@@ -242,7 +242,7 @@ def logistic_regression(X_train, X_test, y_train, y_test):
     return best_logreg_model, y_pred_logreg
 
 # ML algorithms with hyperparameter tuning if task='Regression'
-def random_forest_regression(X, Y):
+def random_forest_regression(X_train, X_test, y_train, y_test):
     # Splitting the dataset into training and testing sets
     X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.2, random_state=42)
 
