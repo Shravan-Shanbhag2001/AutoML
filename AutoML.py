@@ -433,8 +433,7 @@ def main():
             Y = label_encoder.fit_transform(Y)
             Y = pd.DataFrame(Y)
         st.write("Preprocessing done")
-        st.write(X)
-        st.write(X_predictor)
+        
         # Splitting the dataset into training and testing sets
         X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.2, random_state=42)
         y_train = y_train.values.ravel()
