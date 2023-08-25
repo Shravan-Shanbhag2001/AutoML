@@ -51,7 +51,7 @@ def preprocess_data(X, categorical_threshold):
             X.drop(column, axis=1, inplace=True)
             X = pd.concat([X, tfidf_df], axis=1)
             st.write("elif_tfidf")
-
+    st.write(X.columns)
     return X
 
 
