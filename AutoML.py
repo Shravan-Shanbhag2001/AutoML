@@ -119,7 +119,10 @@ def perform_feature_selection(X, Y, task):
         # print(mi_df, X)
 
     # Feature selection using Random Forest
-    rf_model = RandomForestClassifier(random_state=42)
+    if(task == "Regression"):
+        rf_model = RandomForestRegressor(random_state=42)
+    else:
+        rf_model = RandomForestClassifier(random_state=42)
     rf_model.fit(X, Y)
 
     # Getting feature importances from the trained Random Forest model
