@@ -421,7 +421,7 @@ def main():
 
         categorical_threshold = Y.nunique()
         if(task == "Regression"):
-            categorical_threshold = 10
+            categorical_threshold = 5
         X = preprocess_data(X, categorical_threshold)
         X_predictor = preprocess_data(X_predictor, categorical_threshold)
         if(task=="Classification" and (Y.dtype != int and Y.dtype != float)):
