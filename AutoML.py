@@ -444,8 +444,7 @@ def main():
         X_test = X_test.loc[:, mask_test]
         X_predictor = X_predictor.loc[:, mask_predictor]
         st.write("Feature Selection done")
-        print(X_train.columns)
-        print(X_predictor.columns)
+        st.write(X_predictor)
         # Classification models
         if(task=="Classification"):
             best_rf_model, y_pred_rf = random_forest_classification(X_train, X_test, y_train, y_test)
