@@ -25,7 +25,7 @@ def preprocess_data(X, categorical_threshold):
             label_encoder = LabelEncoder()
             encoded_column = label_encoder.fit_transform(column_data)
             encoded_df = pd.DataFrame(encoded_column, columns=[column_name + "_encoded"])
-        return encoded_df
+            return encoded_df
         elif uniq <= encoding_threshold:
             one_hot_encoder = OneHotEncoder()
             one_hot_encoded = one_hot_encoder.fit_transform(column_data)
