@@ -478,14 +478,9 @@ def main():
             model = None
         if model is not None:
             predictions = model.predict(X_predictor)
-            if (task == "Classification" and (predictions.dtype == int or predictions.dtype == float)) :
-                #accuracy = accuracy_score(Y.iloc[-50:], predictions)
+            if (task == "Classification" and predictions.dtype == Y[0].dtype) :
                 predictions = label_encoder.inverse_transform(predictions)
-                #st.write(f"Accuracy on last 50 samples: {accuracy:.2f}")
-                st.write("Predictions:")
             else:
-                #mse = mean_absolute_error(Y.iloc[-50:], predictions)
-                #st.write(f"Mean Absolute Error on last 50 samples: {mse:.2f}")
                 st.write("Predictions:")
 
             combined_data = pd.concat([X_predict.reset_index(drop=True), pd.DataFrame(predictions, columns=["Predictions"])], axis=1)
