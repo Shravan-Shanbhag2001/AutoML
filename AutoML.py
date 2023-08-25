@@ -418,7 +418,6 @@ def main():
         Y = df.iloc[:, -1]
         X_predict = pd.read_csv(uploaded_file_predictor)
         X_predictor = X_predict.fillna(method='ffill')
-        st.write(X_predictor.isna().sum())
         categorical_threshold = Y.nunique()
         if(task == "Regression"):
             categorical_threshold = 5
@@ -476,6 +475,7 @@ def main():
             st.write("Unknown best model:", best_model)
             model = None
         if model is not None:
+            st.write(X_predictor.isna().sum())
             predictions = model.predict(X_predictor)
             if (task == "Classification" and (predictions.dtype != int and predictions.dtype != float)) :
                 #accuracy = accuracy_score(Y.iloc[-50:], predictions)
