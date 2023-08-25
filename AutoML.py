@@ -39,12 +39,9 @@ def preprocess_data(X, categorical_threshold):
             df = categorical_encod(uniq, categorical_threshold, X[[column]])
             X = X.drop(column, axis=1)
             X = pd.concat([X, df], axis=1)
-            st.write("if")
         elif uniq > categorical_threshold and (X[column].dtype == int or X[column].dtype == float):
             scaler = StandardScaler()
             X[column] = scaler.fit_transform(X[[column]])
-            st.write("elif_scaler")
-    st.write(X.columns)
     return X
 
 
