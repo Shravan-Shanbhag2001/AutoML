@@ -24,7 +24,7 @@ def preprocess_data(X, X_predictor, categorical_threshold):
         if uniq <= encoding_threshold:
             one_hot_encoder = OneHotEncoder()
             one_hot_encoded = one_hot_encoder.fit_transform(column_data)
-            one_hot_encoded_pred = one_hot_encoder.fit_transform(pred_column_data)
+            one_hot_encoded_pred = one_hot_encoder.transform(pred_column_data)
             one_hot_encoded_df = pd.DataFrame(one_hot_encoded.toarray(), columns=one_hot_encoder.get_feature_names_out())
             one_hot_encoded_df_pred = pd.DataFrame(one_hot_encoded_pred.toarray(), columns=one_hot_encoder.get_feature_names_out())
             return one_hot_encoded_df, one_hot_encoded_df_pred
