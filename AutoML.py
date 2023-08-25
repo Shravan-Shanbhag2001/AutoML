@@ -478,7 +478,7 @@ def main():
             model = None
         if model is not None:
             predictions = model.predict(X_predictor)
-            if (task == "Classification" and predictions.dtype == Y[0].dtype) :
+            if (task == "Classification" and (predictions.dtype == int or predictions.dtype==float)):
                 predictions = label_encoder.inverse_transform(predictions)
             else:
                 st.write("Predictions:")
