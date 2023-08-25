@@ -418,7 +418,7 @@ def main():
         Y = df.iloc[:, -1]
         X_predict = pd.read_csv(uploaded_file_predictor)
         X_predictor = X_predict.fillna(method='ffill')
-        st.write(X_predictor.isna().any())
+        st.write(X_predictor.isna().sum())
         categorical_threshold = Y.nunique()
         if(task == "Regression"):
             categorical_threshold = 5
