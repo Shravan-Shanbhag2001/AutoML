@@ -45,7 +45,7 @@ def preprocess_data(X, categorical_threshold):
         elif X[column].dtype == object:
             tfidf_vectorizer = TfidfVectorizer(max_features=1000)
             tfidf_features = tfidf_vectorizer.fit_transform(X[column])
-            tfidf_df = pd.DataFrame(tfidf_features.toarray(), columns=tfidf_vectorizer.get_feature_names_out())
+            tfidf_df = pd.DataFrame(tfidf_features.toarray(), columns=columns=[f"tfidf_{name}" for name in tfidf_vectorizer.get_feature_names_out()])
             X = pd.concat([X.drop(columns=column), tfidf_df], axis=1)
 
     return X
