@@ -13,8 +13,7 @@ Welcome to the AutoML web app designed for general-purpose classification and re
 ## Usage
 
 1. Visit the hosted Streamlit app: [AutoML App](https://automl-luhnzi9kpgtmokptqb3odm.streamlit.app/).
-
-2.Upload your training and predicting datasets using the provided interface. For testing purposes, you can find sample datasets in the `Datasets.zip` folder. To utilize these datasets within the app, follow these steps:
+2. Upload your training and predicting datasets using the provided interface. For testing purposes, you can find sample datasets in the `Datasets.zip` folder. To utilize these datasets within the app, follow these steps:
 
    a. Download the `Datasets.zip` folder.
    
