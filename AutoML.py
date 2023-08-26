@@ -1,3 +1,4 @@
+# Importing necessary libraries
 import numpy as np
 import pandas as pd
 from sklearn.preprocessing import StandardScaler,OneHotEncoder,LabelEncoder
@@ -18,8 +19,8 @@ from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 import streamlit as st
 
-def preprocess_data(X, X_predictor, categorical_threshold):
-    def categorical_encod(uniq, categorical_threshold, column_data, pred_column_data):
+def preprocess_data(X, X_predictor, categorical_threshold):        # Function for preprocessing feature data i.e. X dataframe
+    def categorical_encod(uniq, categorical_threshold, column_data, pred_column_data):    # Function for encoding categorical data based on categorical threshold and encoding threshold
         encoding_threshold = int(0.4 * categorical_threshold)
         if uniq <= encoding_threshold:
             one_hot_encoder = OneHotEncoder()
@@ -39,7 +40,7 @@ def preprocess_data(X, X_predictor, categorical_threshold):
     columns = X.columns
     for column in columns:
         uniq = X[column].nunique()
-        if uniq <= categorical_threshold or X[column].dtype == object:
+        if uniq <= categorical_threshold or X[column].dtype == object:            # Conditional statements for checking whether data is categorical or continuous numeric type.
             df, df_pred = categorical_encod(uniq, categorical_threshold, X[[column]], X_predictor[[column]])
             X = X.drop(column, axis=1)
             X_predictor = X_predictor.drop(column, axis=1)
@@ -52,14 +53,15 @@ def preprocess_data(X, X_predictor, categorical_threshold):
     return X, X_predictor
 
 
-def automated_feature_engineering(X, task):
+def automated_feature_engineering(X, task):        # Function for automating feature engineering using Featuretools library
     # Creating an EntitySet
     es = ft.EntitySet()
 
     # Defining an Entity using the DataFrame
     es = es.add_dataframe(dataframe_name="User_data_transformed", dataframe=X, index='index')
 
-    if (task == "Regression"):
+    if (task == "Regression"):                        # Feature engineering based on type of data and task
+        # Running Deep Feature Synthesis
         features, feature_defs = ft.dfs(entityset=es, target_dataframe_name="User_data_transformed",
                                         agg_primitives=["count", "sum", "mean", "median", "std", "min", "max"],
                                         trans_primitives=["add_numeric", "subtract_numeric", "multiply_numeric",
@@ -81,7 +83,6 @@ def automated_feature_engineering(X, task):
         aggregation_primitives = all_primitives_df[all_primitives_df['type'] == 'aggregation']
         transformation_primitives = all_primitives_df[all_primitives_df['type'] == 'transform']
 
-        # Running Deep Feature Synthesis
         features, feature_defs = ft.dfs(entityset=es, target_dataframe_name="User_data_transformed",
                                         agg_primitives=aggregation_primitives['name'].tolist(),
                                         trans_primitives=transformation_primitives['name'].tolist())
@@ -89,7 +90,7 @@ def automated_feature_engineering(X, task):
     X = features
     return X
 
-def perform_feature_selection(X, Y, task):
+def perform_feature_selection(X, Y, task):        # Cleaning data and Selecting best features which are relevant for further process
     # Drop columns with NaN values
     nan_columns = X.columns[X.isnull().any()]
     X = X.drop(nan_columns, axis=1)
@@ -104,7 +105,7 @@ def perform_feature_selection(X, Y, task):
     # print(correlations)
     # print(Y)
 
-    # Calculate mutual information
+    # Calculating mutual information and selecting relevant features
     if task == "Classification":
         mi_scores = mutual_info_classif(X, Y)
 
@@ -143,7 +144,7 @@ def perform_feature_selection(X, Y, task):
     #print(X)
     return(X)
 
-# ML algorithms with hyperparameter tuning if task='Classification'
+# ML algorithms with automated hyperparameter tuning if task='Classification'
 # Random Forest Classifier
 def random_forest_classification(X_train, X_test, y_train, y_test):
     # Defining hyperparameter grid for Random Forest
@@ -206,6 +207,7 @@ def gradient_boosting_classification(X_train, X_test, y_train, y_test):
 
     return best_gb_model, y_pred_gb
 
+# Logistic Regression for classification
 def logistic_regression(X_train, X_test, y_train, y_test):
     # Define the hyperparameter ranges
     param_dist = {
@@ -242,7 +244,8 @@ def logistic_regression(X_train, X_test, y_train, y_test):
 
     return best_logreg_model, y_pred_logreg
 
-# ML algorithms with hyperparameter tuning if task='Regression'
+# ML algorithms with automated hyperparameter tuning if task='Regression'
+# Random Forest Regression
 def random_forest_regression(X_train, X_test, y_train, y_test):
     # Defining hyperparameter grid for Random Forest
     param_distributions = {
@@ -271,6 +274,7 @@ def random_forest_regression(X_train, X_test, y_train, y_test):
 
     return best_rf_model, y_pred_rf
 
+# Gradient Boosting Regression
 def gradient_boosting_regression(X_train, X_test, y_train, y_test):
     # Defining hyperparameter distribution for Gradient Boosting
     param_distributions = {
@@ -303,6 +307,7 @@ def gradient_boosting_regression(X_train, X_test, y_train, y_test):
 
     return best_gb_model, y_pred_gb
 
+# Linear Regression
 def linear_regression(X_train, X_test, y_train, y_test):
     # Define the hyperparameter ranges
     param_dist = {
@@ -336,7 +341,7 @@ def linear_regression(X_train, X_test, y_train, y_test):
 
     return best_linear_model, y_pred_linear
 
-def select_best_model_classification(y_test, y_pred_rf, y_pred_gb, y_pred_logreg):
+def select_best_model_classification(y_test, y_pred_rf, y_pred_gb, y_pred_logreg):            # Function for selecting best model for classification based on accuracy of each model
     metrics_rf = {
         "Accuracy": accuracy_score(y_test, y_pred_rf),
         "Precision": precision_score(y_test, y_pred_rf, average='binary' if len(np.unique(y_test)) == 2 else 'weighted'),
@@ -368,7 +373,7 @@ def select_best_model_classification(y_test, y_pred_rf, y_pred_gb, y_pred_logreg
 
     return best_model, best_metrics
 
-def select_best_model_regression(y_test, y_pred_rf, y_pred_gb, y_pred_linear):
+def select_best_model_regression(y_test, y_pred_rf, y_pred_gb, y_pred_linear):    # Function for selecting best model for regression based on R-squared score of each model 
     metrics_rf = {
         "Mean Squared Error": mean_squared_error(y_test, y_pred_rf),
         "Root Mean Squared Error": mean_squared_error(y_test, y_pred_rf, squared=False),
@@ -403,7 +408,7 @@ def select_best_model_regression(y_test, y_pred_rf, y_pred_gb, y_pred_linear):
 
 # Main Streamlit app code
 def main():
-    st.sidebar.title("Algorithms supported")
+    st.sidebar.title("Algorithms supported")        # Sidebar information
     st.sidebar.header("Classification: ")
     st.sidebar.write("1) Random Forest Classifier")
     st.sidebar.write("2) Gradient Boosting Classifier")
@@ -413,11 +418,11 @@ def main():
     st.sidebar.write("2) Gradient Boosting Regression")
     st.sidebar.write("3) Linear Regression")
     st.title("Automated Machine Learning Project")
-    uploaded_file_original = st.file_uploader("Upload a CSV file for training", type=["csv"])
-    uploaded_file_predictor = st.file_uploader("Upload a CSV file for predicting", type=["csv"])
-    task = st.radio("Specify task", ["Classification", "Regression"])
-    submit_button = st.button("Submit")
-    if submit_button and uploaded_file_original is not None and uploaded_file_predictor is not None:
+    uploaded_file_original = st.file_uploader("Upload a CSV file for training", type=["csv"])    # Uploading data for training 
+    uploaded_file_predictor = st.file_uploader("Upload a CSV file for predicting", type=["csv"])    # Uploading data for predicting
+    task = st.radio("Specify task", ["Classification", "Regression"])    # Task selection by user
+    submit_button = st.button("Submit")    # Submit button
+    if submit_button and uploaded_file_original is not None and uploaded_file_predictor is not None:    # Code running after user has uploaded required files and pressed submit button
         df = pd.read_csv(uploaded_file_original)
         st.write("Uploaded training DataFrame:")
         st.write(df)
@@ -445,19 +450,22 @@ def main():
         X_train = automated_feature_engineering(X_train, task)
         X_test = automated_feature_engineering(X_test, task)
         X_predictor = automated_feature_engineering(X_predictor, task)
-        st.write("Feature Engineering done")
+        st.write("Feature Engineering done")        # Feature engineering done on both training and predicting dataset
+        
         X_train = perform_feature_selection(X_train, y_train, task)
-
         Xtrain_columns=X_train.columns
         mask_test = X_test.columns.isin(Xtrain_columns)
         mask_predictor = X_predictor.columns.isin(Xtrain_columns)
         X_test = X_test.loc[:, mask_test]
         X_predictor = X_predictor.loc[:, mask_predictor]
-        st.write("Feature Selection done")
+        st.write("Feature Selection done")        # Feature selection done on both training and predicting dataset
+
+        # Cleaning data after Feature engineering and selection done
         X_train = X_train.fillna(method='ffill').fillna(method='bfill')
         X_test = X_test.fillna(method='ffill').fillna(method='bfill')
         X_predictor = X_predictor.fillna(method='ffill').fillna(method='bfill')
-        # Classification models
+        
+        # Selecting Classification or Regression model
         if(task=="Classification"):
             best_rf_model, y_pred_rf = random_forest_classification(X_train, X_test, y_train, y_test)
             best_gb_model, y_pred_gb = gradient_boosting_classification(X_train, X_test, y_train, y_test)
@@ -488,15 +496,15 @@ def main():
             st.write("Unknown best model:", best_model)
             model = None
         if model is not None:
-            predictions = model.predict(X_predictor)
+            predictions = model.predict(X_predictor)        # Predicting target variable of predictor dataset
             if (label_encoder != "Not encoded"):
                 predictions = label_encoder.inverse_transform(predictions)
             st.write("Predictions:")
 
             combined_data = pd.concat([X_predict.reset_index(drop=True), pd.DataFrame(predictions, columns=["Predictions"])], axis=1)
             styled_combined_data = combined_data.style.set_properties(subset=['Predictions'],**{'background-color': 'yellow'})
-            st.dataframe(styled_combined_data, width=800, height=400)
+            st.dataframe(styled_combined_data, width=800, height=400)        # Show final dataframe with predicted output
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":        # Running main function
     main()
